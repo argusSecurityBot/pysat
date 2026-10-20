@@ -1078,7 +1078,17 @@ static void sigint_handler(int signum)
 //=============================================================================
 static int pyint_to_cint(PyObject *i_obj)
 {
-	return PyLong_AsLong(i_obj);
+	long l = PyLong_AsLong(i_obj);
+
+	if (l == -1 && PyErr_Occurred())
+		return 0;
+
+	if (l > INT_MAX || l < -INT_MAX) {
+		PyErr_SetString(PyExc_ValueError, "integer out of range");
+		return 0;
+	}
+
+	return (int)l;
 }
 
 // PyInt_fromLong()
@@ -1145,7 +1155,17 @@ PyMODINIT_FUNC PyInit_pysolvers(void)
 //=============================================================================
 static int pyint_to_cint(PyObject *i_obj)
 {
-	return PyInt_AsLong(i_obj);
+	long l = PyInt_AsLong(i_obj);
+
+	if (l == -1 && PyErr_Occurred())
+		return 0;
+
+	if (l > INT_MAX || l < -INT_MAX) {
+		PyErr_SetString(PyExc_ValueError, "integer out of range");
+		return 0;
+	}
+
+	return (int)l;
 }
 
 // PyInt_fromLong()
@@ -1218,7 +1238,8 @@ static bool pyiter_to_vector(PyObject *obj, vector<int>& vect, int& max_var)
 
 		if (l == 0) {
 			Py_DECREF(i_obj);
-			PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
+			if (!PyErr_Occurred())
+				PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
 			return false;
 		}
 
@@ -1361,7 +1382,8 @@ static PyObject *py_cadical103_add_cl(PyObject *self, PyObject *args)
 
 		if (l == 0) {
 			Py_DECREF(i_obj);
-			PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
+			if (!PyErr_Occurred())
+				PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
 			return NULL;
 		}
 
@@ -1455,7 +1477,8 @@ static PyObject *py_cadical103_solve(PyObject *self, PyObject *args)
 
 		if (l == 0) {
 			Py_DECREF(i_obj);
-			PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
+			if (!PyErr_Occurred())
+				PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
 			return NULL;
 		}
 
@@ -1519,7 +1542,8 @@ static PyObject *py_cadical103_solve_lim(PyObject *self, PyObject *args)
 
 		if (l == 0) {
 			Py_DECREF(i_obj);
-			PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
+			if (!PyErr_Occurred())
+				PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
 			return NULL;
 		}
 
@@ -1822,7 +1846,8 @@ static PyObject *py_cadical153_add_cl(PyObject *self, PyObject *args)
 
 		if (l == 0) {
 			Py_DECREF(i_obj);
-			PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
+			if (!PyErr_Occurred())
+				PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
 			return NULL;
 		}
 
@@ -1943,7 +1968,8 @@ static PyObject *py_cadical153_process(PyObject *self, PyObject *args)
 
 		if (l == 0) {
 			Py_DECREF(i_obj);
-			PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
+			if (!PyErr_Occurred())
+				PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
 			return NULL;
 		}
 
@@ -2052,7 +2078,8 @@ static PyObject *py_cadical153_solve(PyObject *self, PyObject *args)
 
 		if (l == 0) {
 			Py_DECREF(i_obj);
-			PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
+			if (!PyErr_Occurred())
+				PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
 			return NULL;
 		}
 
@@ -2116,7 +2143,8 @@ static PyObject *py_cadical153_solve_lim(PyObject *self, PyObject *args)
 
 		if (l == 0) {
 			Py_DECREF(i_obj);
-			PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
+			if (!PyErr_Occurred())
+				PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
 			return NULL;
 		}
 
@@ -2233,7 +2261,8 @@ static PyObject *py_cadical153_setphases(PyObject *self, PyObject *args)
 
 		if (l == 0) {
 			Py_DECREF(i_obj);
-			PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
+			if (!PyErr_Occurred())
+				PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
 			return NULL;
 		}
 
@@ -2518,7 +2547,8 @@ static PyObject *py_cadical195_add_cl(PyObject *self, PyObject *args)
 
 		if (l == 0) {
 			Py_DECREF(i_obj);
-			PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
+			if (!PyErr_Occurred())
+				PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
 			return NULL;
 		}
 
@@ -2639,7 +2669,8 @@ static PyObject *py_cadical195_process(PyObject *self, PyObject *args)
 
 		if (l == 0) {
 			Py_DECREF(i_obj);
-			PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
+			if (!PyErr_Occurred())
+				PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
 			return NULL;
 		}
 
@@ -2753,7 +2784,8 @@ static PyObject *py_cadical195_solve(PyObject *self, PyObject *args)
 
 		if (l == 0) {
 			Py_DECREF(i_obj);
-			PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
+			if (!PyErr_Occurred())
+				PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
 			return NULL;
 		}
 
@@ -2821,7 +2853,8 @@ static PyObject *py_cadical195_solve_lim(PyObject *self, PyObject *args)
 
 		if (l == 0) {
 			Py_DECREF(i_obj);
-			PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
+			if (!PyErr_Occurred())
+				PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
 			return NULL;
 		}
 
@@ -2945,7 +2978,8 @@ static PyObject *py_cadical195_setphases(PyObject *self, PyObject *args)
 
 		if (l == 0) {
 			Py_DECREF(i_obj);
-			PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
+			if (!PyErr_Occurred())
+				PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
 			return NULL;
 		}
 
@@ -4096,7 +4130,8 @@ static PyObject *py_cadical300_process(PyObject *self, PyObject *args)
 
 		if (l == 0) {
 			Py_DECREF(i_obj);
-			PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
+			if (!PyErr_Occurred())
+				PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
 			return NULL;
 		}
 
@@ -5392,7 +5427,8 @@ static inline bool ergo_iterate(PyObject *obj, vector<int>& v, int& max_var)
 
 		if (l == 0) {
 			Py_DECREF(i_obj);
-			PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
+			if (!PyErr_Occurred())
+				PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
 			return false;
 		}
 
@@ -6669,7 +6705,8 @@ static inline bool gluecard3_iterate(
 
 		if (l == 0) {
 			Py_DECREF(i_obj);
-			PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
+			if (!PyErr_Occurred())
+				PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
 			return false;
 		}
 
@@ -7283,7 +7320,8 @@ static inline bool gluecard41_iterate(
 
 		if (l == 0) {
 			Py_DECREF(i_obj);
-			PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
+			if (!PyErr_Occurred())
+				PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
 			return false;
 		}
 
@@ -7897,7 +7935,8 @@ static inline bool glucose3_iterate(
 
 		if (l == 0) {
 			Py_DECREF(i_obj);
-			PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
+			if (!PyErr_Occurred())
+				PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
 			return false;
 		}
 
@@ -8481,7 +8520,8 @@ static inline bool glucose41_iterate(
 
 		if (l == 0) {
 			Py_DECREF(i_obj);
-			PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
+			if (!PyErr_Occurred())
+				PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
 			return false;
 		}
 
@@ -9065,7 +9105,8 @@ static inline bool glucose421_iterate(
 
 		if (l == 0) {
 			Py_DECREF(i_obj);
-			PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
+			if (!PyErr_Occurred())
+				PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
 			return false;
 		}
 
@@ -9738,7 +9779,8 @@ static PyObject *py_lingeling_add_cl(PyObject *self, PyObject *args)
 
 		if (l == 0) {
 			Py_DECREF(i_obj);
-			PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
+			if (!PyErr_Occurred())
+				PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
 			return NULL;
 		}
 
@@ -9834,7 +9876,8 @@ static PyObject *py_lingeling_solve(PyObject *self, PyObject *args)
 
 		if (l == 0) {
 			Py_DECREF(i_obj);
-			PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
+			if (!PyErr_Occurred())
+				PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
 			return NULL;
 		}
 
@@ -9897,7 +9940,8 @@ static PyObject *py_lingeling_setphases(PyObject *self, PyObject *args)
 
 		if (lit == 0) {
 			Py_DECREF(i_obj);
-			PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
+			if (!PyErr_Occurred())
+				PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
 			return NULL;
 		}
 
@@ -10119,7 +10163,8 @@ static inline bool maplechrono_iterate(
 
 		if (l == 0) {
 			Py_DECREF(i_obj);
-			PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
+			if (!PyErr_Occurred())
+				PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
 			return false;
 		}
 
@@ -10670,7 +10715,8 @@ static inline bool maplesat_iterate(
 
 		if (l == 0) {
 			Py_DECREF(i_obj);
-			PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
+			if (!PyErr_Occurred())
+				PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
 			return false;
 		}
 
@@ -11239,7 +11285,8 @@ static inline bool maplecm_iterate(
 
 		if (l == 0) {
 			Py_DECREF(i_obj);
-			PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
+			if (!PyErr_Occurred())
+				PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
 			return false;
 		}
 
@@ -11805,7 +11852,8 @@ static inline bool mergesat3_iterate(
 
 		if (l == 0) {
 			Py_DECREF(i_obj);
-			PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
+			if (!PyErr_Occurred())
+				PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
 			return false;
 		}
 
@@ -12302,7 +12350,8 @@ static inline bool minicard_iterate(
 
 		if (l == 0) {
 			Py_DECREF(i_obj);
-			PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
+			if (!PyErr_Occurred())
+				PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
 			return false;
 		}
 
@@ -12847,7 +12896,8 @@ static inline bool minisat22_iterate(
 
 		if (l == 0) {
 			Py_DECREF(i_obj);
-			PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
+			if (!PyErr_Occurred())
+				PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
 			return false;
 		}
 
@@ -13362,7 +13412,8 @@ static inline bool minisatgh_iterate(
 
 		if (l == 0) {
 			Py_DECREF(i_obj);
-			PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
+			if (!PyErr_Occurred())
+				PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
 			return false;
 		}
 
@@ -13877,7 +13928,8 @@ static inline bool minisatep_iterate(
 
 		if (l == 0) {
 			Py_DECREF(i_obj);
-			PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
+			if (!PyErr_Occurred())
+				PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
 			return false;
 		}
 
@@ -15190,7 +15242,8 @@ static PyObject *py_kissat404_add_cl(PyObject *self, PyObject *args)
 
 		if (l == 0) {
 			Py_DECREF(i_obj);
-			PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
+			if (!PyErr_Occurred())
+				PyErr_SetString(PyExc_ValueError, "non-zero integer expected");
 			return NULL;
 		}
 
